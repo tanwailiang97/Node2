@@ -1,4 +1,7 @@
 const express = require ('express');
+
+
+
 const router = express.Router();
 
 const Attendance = require('../models/attendance-models');
@@ -33,6 +36,7 @@ router.route('/:id').get((req, res) => {
 router.route('/adduser').post((req, res) => {
   let username = req.body.username;
   let password = req.body.password;
+  
   let date = new Date();
   let newUser = new User({
     username,
