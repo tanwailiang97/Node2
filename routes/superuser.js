@@ -2,6 +2,7 @@ const express = require ('express');
 const router = express.Router();
 
 const Attendance = require('../models/attendance-models');
+const User = require('../models/user-models');
 
 router.route('/').get((req, res) => {
   Attendance.find()
@@ -26,6 +27,22 @@ router.route('/:id').get((req, res) => {
   Attendance.findById(req.params.id)
     .then(attendance => res.json(attendance))
     .catch(err => res.status(400).json('Error: ' + err));
+});
+
+
+router.route('/adduser').post((req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  let date = new Date();
+  let newUser = new User({
+    username,
+    password,
+    date
+  });
+  console.log(`${username} Added at ${date.toLocaleDateString()} : ${date.toLocaleTimeString()}`);
+  newUser.save()
+  .then(() => res.json('User added!'))
+  .catch(err => res.status(400).json('Error: ' + err));
 });
 /*
 router.route('/:id').delete((req, res) => {
