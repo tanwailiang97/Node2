@@ -1,11 +1,16 @@
 const express = require('express');
+const morgan = require('morgan');
 const path = require('path');
 const createError = require('http-errors')
 
 require('./helpers/init-mongodb');
+const { verifyAccessToken } = require('./helpers/jwt-helper')
+require('./helpers/init-redis')
 
 const pageRouter = require('./routes/pages');
 const superuserRouter = require('./routes/superuser');
+
+const AuthRoute = require('./routes/auth-route')
 
 const app = express();
 
@@ -21,6 +26,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 //routers
+app.get('/token', verifyAccessToken, async (req, res, next) => {
+  res.send('Hello from express.')
+})
+
+app.use('/auth', AuthRoute)
+
 app.use('/superuser',superuserRouter);
 app.use('/',pageRouter);
 

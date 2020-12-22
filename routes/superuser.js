@@ -1,7 +1,5 @@
 const express = require ('express');
 
-
-
 const router = express.Router();
 
 const Attendance = require('../models/attendance-models');
@@ -14,13 +12,13 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
-  let username = req.body.username;
+  let email = req.body.email;
   let date = new Date();
   let newAttendance = new Attendance({
-    username,
+    email,
     date
   });
-  console.log(`${username} attendance at ${date.toLocaleDateString()} : ${date.toLocaleTimeString()}`);
+  console.log(`${email} attendance at ${date.toLocaleDateString()} : ${date.toLocaleTimeString()}`);
   newAttendance.save()
   .then(() => res.json('Attendance added!'))
   .catch(err => res.status(400).json('Error: ' + err));
@@ -34,16 +32,16 @@ router.route('/:id').get((req, res) => {
 
 
 router.route('/adduser').post((req, res) => {
-  let username = req.body.username;
+  let email = req.body.email;
   let password = req.body.password;
   
   let date = new Date();
   let newUser = new User({
-    username,
+    email,
     password,
     date
   });
-  console.log(`${username} Added at ${date.toLocaleDateString()} : ${date.toLocaleTimeString()}`);
+  console.log(`${email} Added at ${date.toLocaleDateString()} : ${date.toLocaleTimeString()}`);
   newUser.save()
   .then(() => res.json('User added!'))
   .catch(err => res.status(400).json('Error: ' + err));

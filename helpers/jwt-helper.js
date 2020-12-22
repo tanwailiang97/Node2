@@ -1,65 +1,69 @@
-const JWT = require('jsonwebtoken')
-const createError = require('http-errors')
-const client = require('./init_redis')
+/**
+ * Json Web Token
+ */
+
+const JWT = require('jsonwebtoken');
+const createError = require('http-errors');
+const client = require('./init-redis');
 
 module.exports = {
   signAccessToken: (userId) => {
     return new Promise((resolve, reject) => {
-      const payload = {}
-      const secret = process.env.ACCESS_TOKEN_SECRET
+      const payload = {};
+      const secret = process.env.ACCESS_TOKEN_SECRET;
       const options = {
         expiresIn: '8h',
-        issuer: 'pickurpage.com',
+        issuer: 'tanwailiang.ddns.net',
         audience: userId,
-      }
+      };
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
-          console.log(err.message)
-          reject(createError.InternalServerError())
+          console.log(err.message);
+          reject(createError.InternalServerError());
           return
         }
         resolve(token)
-      })
-    })
+      });
+    });
   },
   verifyAccessToken: (req, res, next) => {
     if (!req.headers['authorization']) return next(createError.Unauthorized())
-    const authHeader = req.headers['authorization']
-    const bearerToken = authHeader.split(' ')
-    const token = bearerToken[1]
+    const authHeader = req.headers['authorization'];
+    const bearerToken = authHeader.split(' ');
+    const token = bearerToken[1];
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
         const message =
-          err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message
+          err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
         return next(createError.Unauthorized(message))
       }
-      req.payload = payload
-      next()
-    })
+      req.payload = payload;
+      next();
+    });
   },
   signRefreshToken: (userId) => {
     return new Promise((resolve, reject) => {
-      const payload = {}
-      const secret = process.env.REFRESH_TOKEN_SECRET
+      const payload = {};
+      const secret = process.env.REFRESH_TOKEN_SECRET;
       const options = {
         expiresIn: '1y',
-        issuer: 'pickurpage.com',
+        issuer: 'tanwailiang.ddns.net',
         audience: userId,
-      }
+      };
       JWT.sign(payload, secret, options, (err, token) => {
         if (err) {
-          console.log(err.message)
+          console.log(err.message);
           // reject(err)
-          reject(createError.InternalServerError())
+          reject(createError.InternalServerError());
         }
 
         client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
           if (err) {
-            console.log(err.message)
-            reject(createError.InternalServerError())
+            console.log(err.message);
+            reject(createError.InternalServerError());
             return
           }
-          resolve(token)
+          resolve(token);
         })
       })
     })
@@ -71,18 +75,18 @@ module.exports = {
         process.env.REFRESH_TOKEN_SECRET,
         (err, payload) => {
           if (err) return reject(createError.Unauthorized())
-          const userId = payload.aud
+          const userId = payload.aud;
           client.GET(userId, (err, result) => {
             if (err) {
-              console.log(err.message)
-              reject(createError.InternalServerError())
+              console.log(err.message);
+              reject(createError.InternalServerError());
               return
             }
             if (refreshToken === result) return resolve(userId)
-            reject(createError.Unauthorized())
-          })
+            reject(createError.Unauthorized());
+          });
         }
-      )
+      );
     })
   },
 }
