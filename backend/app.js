@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const createError = require('http-errors')
@@ -10,10 +11,11 @@ require('./helpers/init-redis')
 const pageRouter = require('./routes/pages');
 const superuserRouter = require('./routes/superuser');
 
-const AuthRoute = require('./routes/auth-route')
+const AuthRoute = require('./routes/auth-route');
+const UserRoute = require('./routes/user-route');
 
 const app = express();
-
+app.use(cors());
 
 //Does not allow nested object for body parser
 app.use(express.urlencoded({ extended : false}));
@@ -26,11 +28,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 //routers
-app.get('/token', verifyAccessToken, async (req, res, next) => {
-  res.send('Hello from express.')
-})
+// app.get('/all', verifyAccessToken, async (req, res, next) => {
+//   res.send('Hello from express.')
+// })
 
 app.use('/auth', AuthRoute)
+app.use('/user', UserRoute)
 
 app.use('/superuser',superuserRouter);
 app.use('/',pageRouter);
@@ -53,8 +56,20 @@ app.use((err, req, res, next) => {
 });
 
 //listening to port
-app.listen(3000,() =>{
-    console.log('Listening from port 3000')
+app.listen(5000,() =>{
+    console.log('Listening from port 5000')
 });
+
+//Closing procedures go here
+process.on('SIGINT', function() {
+  console.log( "\nShutting down from SIGINT (Ctrl-C)" );
+  process.exit(1);
+});
+
+
+/**
+ * sudo apt install redis-server
+ * sudo service redis-server restart
+ */
 
 module.exports = app;

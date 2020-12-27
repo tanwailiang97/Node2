@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 const User = require('../models/user-models')
-const { authSchema } = require('../helpers/validation-schema')
+const { authSchema, authRegisterSchema } = require('../helpers/validation-schema')
 const {
   signAccessToken,
   signRefreshToken,
@@ -8,18 +8,23 @@ const {
 } = require('../helpers/jwt-helper')
 const client = require('../helpers/init-redis')
 
+
 module.exports = {
 
   register: async (req, res, next) => {
     try {
       // const { email, password } = req.body
       // if (!email || !password) throw createError.BadRequest()
-      const result = await authSchema.validateAsync(req.body)
-
+      console.log(req.body);
+      const result = await authRegisterSchema.validateAsync(req.body)
+  
       const doesExist = await User.findOne({ email: result.email })
       if (doesExist)
         throw createError.Conflict(`${result.email} is already been registered`)
 
+      const doesExist1 = await User.findOne({ username: result.username })
+      if (doesExist1)
+        throw createError.Conflict(`${result.username} is already been registered`)
       const user = new User(result)
       const savedUser = await user.save()
       const accessToken = await signAccessToken(savedUser.id)
@@ -36,9 +41,8 @@ module.exports = {
   login: async (req, res, next) => {
     try {
       const result = await authSchema.validateAsync(req.body)
-      const user = await User.findOne({ email: result.email })
+      const user = await User.findOne({ username: result.username })
       if (!user) throw createError.NotFound('User not registered')
-
       const isMatch = await user.isValidPassword(result.password)
       if (!isMatch)
         throw createError.Unauthorized('Username/password not valid')
@@ -46,7 +50,13 @@ module.exports = {
       const accessToken = await signAccessToken(user.id)
       const refreshToken = await signRefreshToken(user.id)
 
-      res.send({ accessToken, refreshToken })
+      console.log(`${result.username} have Logged In`);
+      res.send({ 
+        accessToken, 
+        refreshToken,
+        username: user.username,
+        roles: ["admin" ,"moderator"]
+      });
     } catch (error) {
       if (error.isJoi === true)
         return next(createError.BadRequest('Invalid Username/Password'))
@@ -70,7 +80,7 @@ module.exports = {
 
   logout: async (req, res, next) => {
     try {
-      const { refreshToken } = req.body
+      const { refreshToken } = req.body;
       if (!refreshToken) throw createError.BadRequest()
       const userId = await verifyRefreshToken(refreshToken)
       client.DEL(userId, (err, val) => {
@@ -78,7 +88,8 @@ module.exports = {
           console.log(err.message)
           throw createError.InternalServerError()
         }
-        console.log(val)
+//        console.log(val)
+        console.log( userId + " logged out")
         res.sendStatus(204)
       })
     } catch (error) {
