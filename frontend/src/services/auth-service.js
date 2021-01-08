@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const querystring = require('querystring');
-const API_URL = "http://tanwailiang.ddns.net/auth/";
+const API_URL = "http://127.0.0.1:5000/auth/";
 
 class AuthService {
 

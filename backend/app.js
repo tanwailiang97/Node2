@@ -13,6 +13,7 @@ const superuserRouter = require('./routes/superuser');
 
 const AuthRoute = require('./routes/auth-route');
 const UserRoute = require('./routes/user-route');
+const PhoneRoute = require('./routes/phone-route');
 
 const app = express();
 app.use(cors());
@@ -32,10 +33,11 @@ app.set('view engine', 'pug');
 //   res.send('Hello from express.')
 // })
 
-app.use('/auth', AuthRoute)
-app.use('/user', UserRoute)
+app.use('/auth', AuthRoute);
+app.use('/user', UserRoute);
+app.use('/phone', PhoneRoute);
 
-app.use('/superuser',superuserRouter);
+//app.use('/superuser',superuserRouter);
 app.use('/',pageRouter);
 
 

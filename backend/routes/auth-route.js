@@ -10,6 +10,6 @@ router.post('/refresh-token', AuthController.refreshToken)
 
 router.post('/logout', AuthController.logout)
 
-
+router.post('/change-role', AuthController.changeRole)
 
 module.exports = router

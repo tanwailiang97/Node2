@@ -1,7 +1,7 @@
 import axios from "axios";
 const querystring = require('querystring')
 
-const baseUrl = "http://tanwailiang.ddns.net";
+const baseUrl = "http://127.0.0.1:5000";
 
 //request interceptor to add the auth token header to requests
 axios.interceptors.request.use(

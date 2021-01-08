@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const attendanceSchema = new Schema({
-  email: { type: String, required: true },
+  username: { type: String, required: true },
+  location: { type: String, required: true },
+  coordinate: { type: String, required: true },
   date: { type: Date, required: true },
 }, {
   timestamps: true,

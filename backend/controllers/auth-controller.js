@@ -4,6 +4,7 @@ const { authSchema, authRegisterSchema } = require('../helpers/validation-schema
 const {
   signAccessToken,
   signRefreshToken,
+  verifyAccessTokenUser,
   verifyRefreshToken,
 } = require('../helpers/jwt-helper')
 const client = require('../helpers/init-redis')
@@ -15,7 +16,6 @@ module.exports = {
     try {
       // const { email, password } = req.body
       // if (!email || !password) throw createError.BadRequest()
-      console.log(req.body);
       const result = await authRegisterSchema.validateAsync(req.body)
   
       const doesExist = await User.findOne({ email: result.email })
@@ -25,6 +25,7 @@ module.exports = {
       const doesExist1 = await User.findOne({ username: result.username })
       if (doesExist1)
         throw createError.Conflict(`${result.username} is already been registered`)
+      result.roles = " ";
       const user = new User(result)
       const savedUser = await user.save()
       const accessToken = await signAccessToken(savedUser.id)
@@ -34,6 +35,28 @@ module.exports = {
       res.send({ accessToken, refreshToken })
     } catch (error) {
       if (error.isJoi === true) error.status = 422
+      next(error)
+    }
+  },
+
+  changeRole: async (req, res, next) => {
+    try {
+      if (!req.headers['authorization']) return next(createError.Unauthorized())
+      const authHeader = req.headers['authorization'];
+      const bearerToken = authHeader.split(' ');
+      const accessToken = bearerToken[1];
+      const { username } = req.body;
+      if (!accessToken) throw createError.BadRequest();
+      const userId  = await verifyAccessTokenUser(accessToken);
+      const admin = await User.findOne({ _id: userId });
+      if (!admin) throw createError.NotFound('Admin not registered');
+      if (!admin.roles.includes("admin")) throw createError.Unauthorized('Not an admin');
+      const user = await User.findOne({ username: username });
+      if (!user) throw createError.NotFound('User not registered');
+      user.roles = "admin";
+      user.save();
+      res.send(user.username + " roles have been changed") ;
+    } catch (error) {
       next(error)
     }
   },
@@ -55,7 +78,7 @@ module.exports = {
         accessToken, 
         refreshToken,
         username: user.username,
-        roles: ["admin" ,"moderator"]
+        roles: user.roles
       });
     } catch (error) {
       if (error.isJoi === true)
