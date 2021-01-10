@@ -9,9 +9,7 @@ const {
 } = require('../helpers/jwt-helper')
 const client = require('../helpers/init-redis')
 
-
 module.exports = {
-
   register: async (req, res, next) => {
     try {
       // const { email, password } = req.body
@@ -38,14 +36,13 @@ module.exports = {
       next(error)
     }
   },
-
   changeRole: async (req, res, next) => {
     try {
       if (!req.headers['authorization']) return next(createError.Unauthorized())
       const authHeader = req.headers['authorization'];
       const bearerToken = authHeader.split(' ');
       const accessToken = bearerToken[1];
-      const { username } = req.body;
+      const { username,roles } = req.body;
       if (!accessToken) throw createError.BadRequest();
       const userId  = await verifyAccessTokenUser(accessToken);
       const admin = await User.findOne({ _id: userId });
@@ -53,9 +50,10 @@ module.exports = {
       if (!admin.roles.includes("admin")) throw createError.Unauthorized('Not an admin');
       const user = await User.findOne({ username: username });
       if (!user) throw createError.NotFound('User not registered');
-      user.roles = "admin";
+      user.roles = roles;
       user.save();
-      res.send(user.username + " roles have been changed") ;
+      console.log(user.username," roles have been changed to " , roles)
+      res.send(user.username + " roles have been changed");
     } catch (error) {
       next(error)
     }

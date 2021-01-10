@@ -1,7 +1,9 @@
 import axios from "axios";
+import authHeader from './auth-header';
 
 const querystring = require('querystring');
-const API_URL = "http://127.0.0.1:5000/auth/";
+const API_URL = "http://tanwailiang.ddns.net/auth-route/";
+
 
 class AuthService {
 
@@ -43,6 +45,22 @@ class AuthService {
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));
   }
+
+  postChangeRole(username,roles){
+    return axios.post(API_URL + 'change-role', querystring.stringify({
+      username,
+      roles
+    }),
+    { headers: authHeader()});
+  }
+
+  deleteUser(username){
+    return axios.delete(API_URL + 'delete-user', querystring.stringify({
+      username
+    }),
+    { headers: authHeader()});
+  }
+
 }
 
 export default new AuthService();

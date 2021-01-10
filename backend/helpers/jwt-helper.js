@@ -6,7 +6,6 @@ const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
 const client = require('./init-redis');
 
-
 module.exports = {
   signAccessToken: (userId) => {
     return new Promise((resolve, reject) => {
@@ -44,7 +43,6 @@ module.exports = {
       next();
     });
   },
-
   verifyAccessTokenUser: (accessToken) => {  
     return new Promise((resolve, reject) => {
       JWT.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {

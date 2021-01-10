@@ -8,7 +8,6 @@ require('./helpers/init-mongodb');
 const { verifyAccessToken } = require('./helpers/jwt-helper')
 require('./helpers/init-redis')
 
-const pageRouter = require('./routes/pages');
 const superuserRouter = require('./routes/superuser');
 
 const AuthRoute = require('./routes/auth-route');
@@ -22,24 +21,46 @@ app.use(cors());
 app.use(express.urlencoded({ extended : false}));
 
 //serve static file from public for any type of request (get,delete,post)
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname,"../frontend/build")));  //
 
 //template engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'pug');
 
 //routers
 // app.get('/all', verifyAccessToken, async (req, res, next) => {
 //   res.send('Hello from express.')
 // })
 
-app.use('/auth', AuthRoute);
-app.use('/user', UserRoute);
+app.use('/auth-route', AuthRoute);
+app.use('/user-route', UserRoute);
 app.use('/phone', PhoneRoute);
 
-//app.use('/superuser',superuserRouter);
-app.use('/',pageRouter);
 
+app.get('/', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+app.get('/home', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html')); 
+});
+app.get('/profile', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+app.get('/login', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+app.get('/register', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+app.get('/user', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+app.get('/mod', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+app.get('/admin', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 
 app.use(async (req, res, next) => {
     next(createError.NotFound())
@@ -57,9 +78,10 @@ app.use((err, req, res, next) => {
       })
 });
 
+let PORT = 5000;
 //listening to port
-app.listen(5000,() =>{
-    console.log('Listening from port 5000')
+app.listen(PORT,() =>{
+    console.log('Listening from port::',PORT)
 });
 
 //Closing procedures go here

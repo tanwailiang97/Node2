@@ -27,11 +27,11 @@ class App extends Component {
 
   componentDidMount() {
     const user = AuthService.getCurrentUser();
-    console.log(user);
+    //console.log(user);
     if (user && user.roles) {  
       this.setState({
         currentUser: user,
-        showModeratorBoard: user.roles.includes("moderator"),
+        showModeratorBoard: user.roles.includes("moderator")||user.roles.includes("admin"),
         showAdminBoard: user.roles.includes("admin"),
       });
     }
@@ -43,6 +43,18 @@ class App extends Component {
 
   render() {
     const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+    
+    window.onbeforeunload = (e) => {
+      window.localStorage.unloadTime = JSON.stringify(new Date());
+      };
+      window.onload = () => {
+      let loadTime = new Date();
+      let unloadTime = new Date(JSON.parse(window.localStorage.unloadTime));
+      let refreshTime = loadTime.getTime() - unloadTime.getTime();
+      if(refreshTime>1000 && document.getElementById("logout-a")!=null){//1000 milliseconds
+        document.getElementById("logout-a").click();       
+      }
+    };
 
     return (
       <div>
@@ -60,7 +72,7 @@ class App extends Component {
             {showModeratorBoard && (
               <li className="nav-item">
                 <Link to={"/mod"} className="nav-link">
-                  Moderator Board
+                  Attendance Record
                 </Link>
               </li>
             )}
@@ -90,7 +102,7 @@ class App extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
+                <a href="/login" id="logout-a" className="nav-link" onClick={this.logOut}>
                   LogOut
                 </a>
               </li>
