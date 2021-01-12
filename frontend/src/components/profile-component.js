@@ -14,8 +14,6 @@ export default class Profile extends Component {
 
   componentDidMount() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    // console.log("User", localStorage.getItem('user'))
-    // console.log("Current User" , currentUser);
 
     if (!currentUser) this.setState({ redirect: "/home" });
     this.setState({ currentUser: currentUser, userReady: true })

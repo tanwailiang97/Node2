@@ -55,7 +55,7 @@ class AuthService {
   }
 
   deleteUser(username){
-    return axios.delete(API_URL + 'delete-user', querystring.stringify({
+    return axios.post(API_URL + 'delete-user', querystring.stringify({
       username
     }),
     { headers: authHeader()});

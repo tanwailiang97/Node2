@@ -12,4 +12,6 @@ router.post('/logout', AuthController.logout)
 
 router.post('/change-role', AuthController.changeRole)
 
+router.post('/delete-user',AuthController.deleteUser)
+
 module.exports = router

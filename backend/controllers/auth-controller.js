@@ -18,11 +18,14 @@ module.exports = {
   
       const doesExist = await User.findOne({ email: result.email })
       if (doesExist)
-        throw createError.Conflict(`${result.email} is already been registered`)
-
+        return res.status(400).send({
+          message: `${result.email} is already been registered`
+        });
       const doesExist1 = await User.findOne({ username: result.username })
       if (doesExist1)
-        throw createError.Conflict(`${result.username} is already been registered`)
+        return res.status(400).send({
+          message: `${result.username} is already been registered`
+        });
       result.roles = " ";
       const user = new User(result)
       const savedUser = await user.save()
@@ -30,7 +33,7 @@ module.exports = {
       const refreshToken = await signRefreshToken(savedUser.id)
 
       console.log(`${result.email} have been registered`);
-      res.send({ accessToken, refreshToken })
+      res.send({ accessToken, refreshToken , message: `${result.username} have registered successfully` })
     } catch (error) {
       if (error.isJoi === true) error.status = 422
       next(error)
@@ -52,12 +55,37 @@ module.exports = {
       if (!user) throw createError.NotFound('User not registered');
       user.roles = roles;
       user.save();
-      console.log(user.username," roles have been changed to " , roles)
+      console.log(admin.username,"had change",user.username,"roles to" , roles)
       res.send(user.username + " roles have been changed");
     } catch (error) {
       next(error)
     }
   },
+
+  deleteUser: async (req, res, next) => {
+    try {
+      if (!req.headers['authorization']) return next(createError.Unauthorized())
+      const authHeader = req.headers['authorization'];
+      const bearerToken = authHeader.split(' ');
+      const accessToken = bearerToken[1];
+      const { username } = req.body;
+      if (!accessToken) throw createError.BadRequest();
+      const userId  = await verifyAccessTokenUser(accessToken);
+      const admin = await User.findOne({ _id: userId });
+      if (!admin) throw createError.NotFound('Admin not registered');
+      if (!admin.roles.includes("admin")) throw createError.Unauthorized('Not an admin');
+      const user = await User.findOne({ username: username });
+      if (!user) throw createError.NotFound('User not registered');
+      User.deleteOne({username: user.username},(err,obj)=>{
+        if(err) console.log(err);
+        console.log(admin.username,"had deleted",user.username);
+        res.send(user.username + " had been deleted");
+      });
+    } catch (error) {
+      next(error)
+    }
+  },
+
 
   login: async (req, res, next) => {
     try {

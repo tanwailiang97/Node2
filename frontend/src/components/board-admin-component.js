@@ -110,7 +110,7 @@ export default class BoardAdmin extends Component {
             onClick={()=>{
               AuthService.deleteUser(props.original.username).then(
                 response => {
-                  if(response.data.includes("have been deleted")){
+                  if(response.data.includes("had been deleted")){
                     UserService.getAdminBoard().then(
                       response => {
                         this.setState({

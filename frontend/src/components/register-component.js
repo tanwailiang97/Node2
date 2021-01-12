@@ -83,7 +83,6 @@ export default class Register extends Component {
 
   handleRegister(e) {
     e.preventDefault();
-
     this.setState({
       message: "",
       successful: false

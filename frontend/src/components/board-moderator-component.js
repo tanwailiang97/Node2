@@ -24,10 +24,7 @@ export default class BoardModerator extends Component {
         })
         this.setState({
           content: data
-        });
-        
-        console.log("Content" , this.state.content);
-        
+        });    
       },
       error => {
         this.setState({
