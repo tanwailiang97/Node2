@@ -96,6 +96,7 @@ export default class BoardModerator extends Component {
         :
         <div>Loading...</div>
         }
+        <div></div>
       </div>
     );
   }

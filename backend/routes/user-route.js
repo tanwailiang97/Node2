@@ -5,7 +5,7 @@ const UserController = require('../controllers/user-controller');
 
 
 router.get('/all',(req, res, next) => {
-    res.send("Home pages: Add Anything You like");
+    res.send("Home pages: A Webpage Created by M2G10");
     return;
 });
 

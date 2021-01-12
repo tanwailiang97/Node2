@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import AuthService from "./services/auth-service";
-
 import Login from "./components/login-component";
 import Register from "./components/register-component";
 import Home from "./components/home-component";
@@ -60,7 +59,7 @@ class App extends Component {
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <Link to={"/"} className="navbar-brand">
-            TWL
+            M2G10
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
@@ -135,6 +134,11 @@ class App extends Component {
             <Route path="/admin" component={BoardAdmin} />
           </Switch>
         </div>
+        <nav className="navbar navbar-light bg-light mt-3">
+          <div className="mx-auto">
+           Capstone project by M2G10©
+          </div>  
+        </nav>
       </div>
     );
   }

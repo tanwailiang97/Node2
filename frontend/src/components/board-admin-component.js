@@ -154,8 +154,9 @@ export default class BoardAdmin extends Component {
         :
         <div>Loading...</div>
         }
-
+        <div></div>
       </div>
     );
+    
   }
 }

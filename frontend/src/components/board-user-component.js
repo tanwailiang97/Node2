@@ -91,8 +91,9 @@ export default class BoardUser extends Component {
         :
         <div>Loading...</div>
         }
-
+        <div></div>
       </div>
+      
     );
   }
 }
