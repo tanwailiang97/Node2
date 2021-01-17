@@ -67,6 +67,14 @@ export default class BoardModerator extends Component {
         maxWidth: 300
       },
       {
+        Header: " ",
+        accessor: "state",
+        style:{
+          textAlign: "center"
+        },
+        width: 100
+      },
+      {
         Header: "Location",
         accessor: "location",
         style:{

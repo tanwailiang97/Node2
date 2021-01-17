@@ -10,7 +10,7 @@ module.exports = {
             const userId  = await verifyAccessTokenUser(accessToken);
             
             const user = await User.findOne({_id: userId});
-            const result = await Attendance.find({username :user.username},{_id: 0,location: 1, date: 1});
+            const result = await Attendance.find({username :user.username},{_id: 0,location: 1, date: 1, state:1});
             res.send(result);
         } catch (error) {
             next(error)
@@ -28,7 +28,7 @@ module.exports = {
             const admin = await User.findOne({ _id: userId });
             if (!admin) throw createError.NotFound('Admin not registered');
             if (!admin.roles.includes("admin")) throw createError.Unauthorized('Not an admin');
-            const result = await Attendance.find({},{_id: 0, username: 1,location: 1, date: 1});
+            const result = await Attendance.find({},{_id: 0, username: 1,location: 1, date: 1, state:1});
             res.send(result);
         } catch (error) {
             next(error)

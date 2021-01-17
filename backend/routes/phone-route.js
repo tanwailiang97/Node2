@@ -12,15 +12,17 @@ router.post('/add/:location',async (req, res, next) => {
       const username = req.body.username;
       const coordinate = req.body.coordinate;
       const location = req.params.location;
+      const state = req.body.state;
       console.log(coordinate);
       const date = new Date();
       const attendance = new Attendance({
         username,
         location,
         coordinate,
+        state,
         date
       });
-      console.log(`${username} attendance at ${location} during ${date.toLocaleDateString()} : ${date.toLocaleTimeString()}`);
+      console.log(`${username} ${state} at ${location} during ${date.toLocaleDateString()} : ${date.toLocaleTimeString()}`);
       await attendance.save()
       res.json("Attendance Added")
     } catch (error) {

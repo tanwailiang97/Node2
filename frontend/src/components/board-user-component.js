@@ -59,6 +59,14 @@ export default class BoardUser extends Component {
         },
         width: 100
       },
+            {
+        Header: " ",
+        accessor: "state",
+        style:{
+          textAlign: "center"
+        },
+        width: 100
+      },
       {
         Header: () => (
           <div
@@ -71,7 +79,8 @@ export default class BoardUser extends Component {
         //   textAlign: "center"
         // },
         maxWidth: 500
-      }
+      },
+
     ]
     return (
       <div className="container">
