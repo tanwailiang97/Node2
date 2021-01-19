@@ -15,6 +15,8 @@ router.get('/mod', UserController.moderator);
 
 router.get('/admin', UserController.admin);
 
+router.get('/temp', UserController.temp);
+
 
 
 

@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const User = require('../models/user-models');
 const Attendance = require('../models/attendance-models');
+const Temperature = require('../models/temp-models');
 const {verifyAccessToken,verifyAccessTokenUser} = require('../helpers/jwt-helper');
 
 module.exports = {
@@ -48,6 +49,23 @@ module.exports = {
             if (!admin.roles.includes("admin")) throw createError.Unauthorized('Not an admin');
             const result = await User.find({},{_id: 0, username: 1, roles: 1});
             res.send(result);           
+        } catch (error) {
+            next(error)
+        }
+    },
+    temp: async (req, res, next)=> {
+        try{
+            if (!req.headers['authorization']) return next(createError.Unauthorized())
+            const authHeader = req.headers['authorization'];
+            const bearerToken = authHeader.split(' ');
+            const accessToken = bearerToken[1];
+            if (!accessToken) throw createError.BadRequest();
+            const userId  = await verifyAccessTokenUser(accessToken);
+            const admin = await User.findOne({ _id: userId });
+            if (!admin) throw createError.NotFound('Admin not registered');
+            if (!admin.roles.includes("admin")) throw createError.Unauthorized('Not an admin');
+            const result = await Temperature.find({},{_id: 0, temperature: 1,date: 1});
+            res.send(result);
         } catch (error) {
             next(error)
         }

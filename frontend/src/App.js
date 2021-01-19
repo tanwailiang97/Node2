@@ -10,6 +10,7 @@ import Profile from "./components/profile-component";
 import BoardUser from "./components/board-user-component";
 import BoardModerator from "./components/board-moderator-component";
 import BoardAdmin from "./components/board-admin-component";
+import BoardTemp from "./components/board-temp-component";
 
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -90,7 +91,13 @@ class App extends Component {
                   </Link>
                 </li>
               )}
-
+              {showModeratorBoard && (
+                <li className="nav-item">
+                  <Link to={"/temp"} className="nav-link">
+                    Temperature Record
+                  </Link>
+                </li>
+              )}
               {showAdminBoard && (
                 <li className="nav-item">
                   <Link to={"/admin"} className="nav-link">
@@ -149,6 +156,7 @@ class App extends Component {
             <Route path="/user" component={BoardUser} />
             <Route path="/mod" component={BoardModerator} />
             <Route path="/admin" component={BoardAdmin} />
+            <Route path="/temp" component={BoardTemp} />
           </Switch>
         </div>
         <nav className="navbar navbar-light bg-light mt-3">

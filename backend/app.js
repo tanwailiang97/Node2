@@ -61,6 +61,12 @@ app.get('/mod', (req,res) => {
 app.get('/admin', (req,res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
+app.get('/about', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+app.get('/product/rtr', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 
 app.use(async (req, res, next) => {
     next(createError.NotFound())

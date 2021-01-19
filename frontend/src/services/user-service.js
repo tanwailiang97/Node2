@@ -20,6 +20,10 @@ class UserService {
     return axios.get(API_URL + 'admin', { headers: authHeader() });
   }
 
+  getTempBoard() {
+    return axios.get(API_URL + 'temp', { headers: authHeader() });
+  }
+
   
 }
 
