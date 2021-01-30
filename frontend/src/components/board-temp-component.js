@@ -20,6 +20,7 @@ export default class BoardTemp extends Component {
         const data = Object.values(response.data);
         data.forEach((element) => {
           let date = new Date(element.date);
+          element.temperature = element.temperature.toFixed(2);
           element.time = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit' ,hour12: false});
           element.date = date.toLocaleDateString();
         })        

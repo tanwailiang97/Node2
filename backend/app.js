@@ -61,6 +61,9 @@ app.get('/mod', (req,res) => {
 app.get('/admin', (req,res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
+app.get('/temp', (req,res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 app.get('/about', (req,res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });

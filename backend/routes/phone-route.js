@@ -58,6 +58,7 @@ router.post('/temp', async (req, res, next) => {
   try{
     const temperature = req.body.temp;
     const date = new Date();
+    console.log(`${temperature} recorded`)
     const tempRecord = new Temperature({
       temperature,
       date
