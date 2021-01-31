@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan');
 const path = require('path');
 const createError = require('http-errors')
 
@@ -23,19 +22,9 @@ app.use(express.urlencoded({ extended : false}));
 //serve static file from public for any type of request (get,delete,post)
 app.use(express.static(path.join(__dirname,"../frontend/build")));  //
 
-//template engine
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'pug');
-
-//routers
-// app.get('/all', verifyAccessToken, async (req, res, next) => {
-//   res.send('Hello from express.')
-// })
-
 app.use('/auth-route', AuthRoute);
 app.use('/user-route', UserRoute);
 app.use('/phone', PhoneRoute);
-
 
 app.get('/', (req,res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
@@ -64,18 +53,11 @@ app.get('/admin', (req,res) => {
 app.get('/temp', (req,res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
-app.get('/about', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-app.get('/product/rtr', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
 
 app.use(async (req, res, next) => {
     next(createError.NotFound())
 });
   
-
 //handling error
 app.use((err, req, res, next) => {
     res.status(err.status || 500);
