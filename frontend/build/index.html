@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width-device-width, initial-scale =1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>RemoteControl</title>
+</head>
+
+<style>
+    .btn{
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        margin: 5%;
+        font-size: 4vw;
+        width: 30%;
+        height: 15vw;
+        border-radius: 3vw;
+    }
+    .grn{
+        background-color: #4CAF50; /* Green */
+    }
+    .red{
+        background-color: #ed2121; /* RED */
+    }
+</style>
+
+<body>
+    <button id="btn-grn" class="btn grn" onclick="clickbtn('1')">Green</button>
+    <button id="btn-red" class="btn red" onclick="clickbtn('2')">Red</button>
+    <script>
+        function clickbtn(value) {
+            console.log(value + " clicked")
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://192.168.1.20:5000/remote?id=" + value);
+            xhr.onreadystatechange = () => { // Call a function when the state changes.
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log("Successsful " + value)
+                    location.reload()
+                }
+            }
+            xhr.send()
+            console.log(value + " done send")
+        }
+    </script>
+
+
+</body>
+</html>

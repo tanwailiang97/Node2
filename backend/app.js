@@ -3,15 +3,18 @@ const cors = require('cors');
 const path = require('path');
 const createError = require('http-errors')
 
-require('./helpers/init-mongodb');
-const { verifyAccessToken } = require('./helpers/jwt-helper')
-require('./helpers/init-redis')
+const SerialPort = require('serialport').SerialPort;
 
-const superuserRouter = require('./routes/superuser');
+let arduinoCOMPort = "COM10"
 
-const AuthRoute = require('./routes/auth-route');
-const UserRoute = require('./routes/user-route');
-const PhoneRoute = require('./routes/phone-route');
+var arduinoSerialPort = new SerialPort({
+  path : arduinoCOMPort,
+  baudRate : 9600
+});
+
+arduinoSerialPort.on('open',function() {
+  console.log('Serial Port ' + arduinoCOMPort + ' is opened.');
+});
 
 const app = express();
 app.use(cors());
@@ -22,37 +25,41 @@ app.use(express.urlencoded({ extended : false}));
 //serve static file from public for any type of request (get,delete,post)
 app.use(express.static(path.join(__dirname,"../frontend/build")));  //
 
-app.use('/auth-route', AuthRoute);
-app.use('/user-route', UserRoute);
-app.use('/phone', PhoneRoute);
+// app.use('/auth-route', AuthRoute);
+// app.use('/user-route', UserRoute);
+// app.use('/phone', PhoneRoute);
 
 app.get('/', (req,res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
-app.get('/home', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html')); 
+app.get('/remote',(request,response) => {
+  //code to perform particular action.
+  //To access POST variable use req.body()methods.
+  console.log(request.query.id)
+  // console.log(request.body);
+  if (request.query.id == 1) {
+    // arduinoSerialPort.write("0\r");
+    arduinoSerialPort.write("1");
+    console.log("Written 1")
+  }
+  else if(request.query.id == 2){
+    arduinoSerialPort.write("2");
+    console.log("Written 2")
+  }
+  else {
+    arduinoSerialPort.write("0")
+    console.log("Written 0")
+  };
+  response.sendStatus(200);
 });
-app.get('/profile', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+
+app.get('/remotereset',(request,response) => {
+  console.log(request.query.id)
+  console.log(request.body);
+  arduinoSerialPort.write("0");
 });
-app.get('/login', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-app.get('/register', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-app.get('/user', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-app.get('/mod', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-app.get('/admin', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-app.get('/temp', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
+
+app.get('/')
 
 app.use(async (req, res, next) => {
     next(createError.NotFound())
